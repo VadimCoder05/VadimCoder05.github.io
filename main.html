@@ -1,2 +1,31 @@
-<p>ГДЕ ДЕНЬГИ</p>
-<p>Заебал</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div id="qrcode"></div>
+    <video id="preview"></video>
+    <button onclick="startScan()">Начать сканирование</button>
+    <!-- Для генерации QR-кодов -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <!-- Для сканирования QR-кодов -->
+    <script src="https://unpkg.com/@zxing/library@0.25.0"></script>
+    <script>
+        // Генерация QR-кода
+        var qrcode = new QRCode(document.getElementById("qrcode"));
+        var data = "https://www.example.com";
+        qrcode.makeCode(data);
+      
+        // Сканирование QR-кода
+        const codeReader = new ZXing.BrowserQRCodeReader();
+        codeReader.decodeFromVideoDevice(undefined, "preview", (result, err) => {
+          if (result) {
+            alert("Содержимое QR-кода: " + result.text);
+          }
+        });
+      </script>
+</body>
+</html>
