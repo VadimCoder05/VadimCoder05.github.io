@@ -4,40 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Scanner</title>
-  <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+  <script src="https://cdn.rawgit.com/zxing-js/ngx-scanner/gh-pages/ngx-scanner.min.js"></script>
 </head>
 <body>
 
 <h1>QR Code Scanner</h1>
 
-<video id="preview" style="width:100%;"></video>
+<!-- Добавляем компонент ngx-scanner -->
+<ngx-scanner></ngx-scanner>
 
 <script>
-  // Инициализация QuaggaJS
-  Quagga.init({
-    inputStream: {
-      name: "Live",
-      type: "LiveStream",
-      target: document.querySelector('#preview'),
-      constraints: {
-        facingMode: "environment", // используем заднюю камеру (если доступно)
-      },
-    },
-    decoder: {
-      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader", "2of5_reader", "code_93_reader"],
-    },
-  }, function(err) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    Quagga.start();
-  });
-
-  // Обработка события при успешном сканировании
-  Quagga.onDetected(function(result) {
-    alert('Содержимое QR кода: ' + result.codeResult.code);
-    Quagga.stop(); // остановка сканирования после успешного распознавания
+  // Добавляем обработчик события при сканировании
+  document.querySelector('ngx-scanner').addEventListener('scan', function(event) {
+    alert('Содержимое QR кода: ' + event.detail);
   });
 </script>
 
