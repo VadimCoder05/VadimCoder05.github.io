@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Scanner</title>
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 </head>
 <body>
-    <div id="qrcode"></div>
-    <video id="preview"></video>
-    <button onclick="startScan()">Начать сканирование</button>
-    <!-- Для генерации QR-кодов -->
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <!-- Для сканирования QR-кодов -->
-    <script src="https://unpkg.com/@zxing/library@0.25.0"></script>
-    <script>
-        // Генерация QR-кода
-        var qrcode = new QRCode(document.getElementById("qrcode"));
-        var data = "https://www.example.com";
-        qrcode.makeCode(data);
-      
-        // Сканирование QR-кода
-        const codeReader = new ZXing.BrowserQRCodeReader();
-        codeReader.decodeFromVideoDevice(undefined, "preview", (result, err) => {
-          if (result) {
-            alert("Содержимое QR-кода: " + result.text);
-          }
-        });
-      </script>
+
+<h1>QR Code Scanner</h1>
+
+<video id="preview"></video>
+
+<script>
+  // Создаем объект для видеопотока
+  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+
+  // Обработчик события при успешном сканировании
+  scanner.addListener('scan', function (content) {
+    alert('Содержимое QR кода: ' + content);
+  });
+
+  // Запускаем сканер при загрузке страницы
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0]);
+    } else {
+      console.error('Нет доступных камер на устройстве.');
+    }
+  }).catch(function (e) {
+    console.error(e);
+  });
+</script>
+
 </body>
 </html>
