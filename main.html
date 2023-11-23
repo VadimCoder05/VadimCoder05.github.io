@@ -4,19 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Scanner</title>
-  <script src="https://cdn.rawgit.com/zxing-js/ngx-scanner/gh-pages/ngx-scanner.min.js"></script>
+  <script src="https://rawgit.com/mebjas/html5-qrcode/master/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
 
 <h1>QR Code Scanner</h1>
 
-<!-- Добавляем компонент ngx-scanner -->
-<ngx-scanner></ngx-scanner>
+<div id="reader" style="width:100%;"></div>
 
 <script>
-  // Добавляем обработчик события при сканировании
-  document.querySelector('ngx-scanner').addEventListener('scan', function(event) {
-    alert('Содержимое QR кода: ' + event.detail);
+  // Инициализация QR Code Scanner
+  const html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", // HTML element id
+    {
+      fps: 10, // Количество кадров в секунду
+      qrbox: 250, // Размер блока для сканирования
+    }
+  );
+
+  // Обработка события при успешном сканировании
+  html5QrcodeScanner.render((result) => {
+    alert('Содержимое QR кода: ' + result);
+    html5QrcodeScanner.clear(); // очистка после успешного распознавания
   });
 </script>
 
