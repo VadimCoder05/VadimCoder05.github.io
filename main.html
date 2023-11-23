@@ -4,29 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Scanner</title>
-  <script src="https://rawgit.com/mebjas/html5-qrcode/master/minified/html5-qrcode.min.js"></script>
+  <script src="https://cdn.rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
 </head>
 <body>
 
 <h1>QR Code Scanner</h1>
 
-<div id="reader" style="width:100%;"></div>
+<video id="qr-video" width="100%" height="100%" style="object-fit: cover;"></video>
 
 <script>
-  // Инициализация QR Code Scanner
-  const html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader", // HTML element id
-    {
-      fps: 10, // Количество кадров в секунду
-      qrbox: 250, // Размер блока для сканирования
-    }
-  );
+  const video = document.getElementById('qr-video');
 
-  // Обработка события при успешном сканировании
-  html5QrcodeScanner.render((result) => {
-    alert('Содержимое QR кода: ' + result);
-    html5QrcodeScanner.clear(); // очистка после успешного распознавания
-  });
+  // Получение доступа к камере
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then((stream) => {
+      video.srcObject = stream;
+      video.play();
+      scanQRCode();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  // Сканирование QR-кода
+  function scanQRCode() {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const scanFrame = () => {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+      if (code) {
+        alert('Содержимое QR кода: ' + code.data);
+      }
+
+      requestAnimationFrame(scanFrame);
+    };
+
+    scanFrame();
+  }
 </script>
 
 </body>
